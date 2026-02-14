@@ -22,3 +22,12 @@ export async function connectDB() {
   await sequelize.authenticate();
   console.log("✅ DB connected");
 }
+
+export async function checkDatabaseConnection() {
+  try {
+    await sequelize.authenticate();
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

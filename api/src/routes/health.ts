@@ -1,7 +1,10 @@
 import { Router } from "express";
+import { checkDatabaseConnection } from "../db";
 
 export const healthRouter = Router();
 
-healthRouter.get("/health", (_, res) => {
-    res.json({ status: "ok" });
+healthRouter.get("/health", async (_, res) => {
+    const dbStatus = await checkDatabaseConnection();
+
+    res.json({ status: "ok", dbStatus: dbStatus ? "ok" : "not ok" });
 });

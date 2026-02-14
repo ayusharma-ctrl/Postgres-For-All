@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: pfa-postgres
+    restart: always
+    env_file:
+      - ./api/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: pfa-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./api/.env
+    command: >
+      sh -c "
+      echo 'Running migrations...' &&
+      npx sequelize-cli db:migrate &&
+      echo 'Migrations complete'
+      "
+    restart: "no"
+
+  api:
+    build:
+      context: ./api
+    container_name: pfa-api
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./api:/app
+    restart: unless-stopped
+
+volumes:
+  pgdata:

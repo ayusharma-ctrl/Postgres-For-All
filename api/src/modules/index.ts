@@ -1,7 +1,8 @@
 import { Module } from "./types";
+import { queueModule } from "./queue/queue.module";
 
 const modules: Module[] = [
-    // queueModule,
+    queueModule,
     // cacheModule,
 ];
 

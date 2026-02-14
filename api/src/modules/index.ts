@@ -1,9 +1,10 @@
 import { Module } from "./types";
 import { queueModule } from "./queue/queue.module";
+import { cacheModule } from "./cache/cache.module";
 
 const modules: Module[] = [
     queueModule,
-    // cacheModule,
+    cacheModule,
 ];
 
 export async function initModules() {

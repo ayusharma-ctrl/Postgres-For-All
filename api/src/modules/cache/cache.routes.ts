@@ -3,6 +3,7 @@ import {
     getOrSetCache,
     setCache
 } from "./cache.service";
+import { getJobStats } from "./materialized-cache.service";
 
 
 export const cacheRouter = Router();
@@ -36,3 +37,9 @@ cacheRouter.post("/test", async (req, res) => {
         cached: true
     });
 });
+
+cacheRouter.get("/job-stats", async (req, res) => {
+        const stats = await getJobStats();
+        res.json(stats);
+    }
+);

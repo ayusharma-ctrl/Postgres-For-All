@@ -2,6 +2,7 @@ import { Module } from "../types";
 import { cacheRouter } from "./cache.routes";
 import { startCacheCleanupWorker } from "./cache.worker";
 import "./cache.model";
+import { startMaterializedViewRefreshWorker } from "./materialized-cache.worker";
 
 
 export const cacheModule: Module = {
@@ -11,5 +12,6 @@ export const cacheModule: Module = {
 
     async start() {
         startCacheCleanupWorker();
+        startMaterializedViewRefreshWorker();
     }
 };

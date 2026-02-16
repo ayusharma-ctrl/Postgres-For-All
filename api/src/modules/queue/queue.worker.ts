@@ -22,21 +22,26 @@ const handlers: HandlerMap = {
 export async function startQueueWorker() {
   console.log("🚀 queue worker started");
 
+  // replace 200 ms with 60000 (1-minute) as we added pub-sub to reduce db poll, still using interval as fallback
   setInterval(async () => {
-    const job = await fetchNextJob();
-    if (!job) return;
+    notifyQueueWorker();
+  }, 60 * 1000); 
+}
 
-    try {
-      const handler = handlers[job.type];
+export async function notifyQueueWorker() {
+  const job = await fetchNextJob();
+  if (!job) return;
 
-      if (!handler) throw new Error("Unknown job type");
+  try {
+    const handler = handlers[job.type];
 
-      await handler(job.payload as any);
+    if (!handler) throw new Error("Unknown job type");
 
-      await markSuccess(job.id); // if task is done, update job status
-      console.log(`Job Id: ${job.id} is success`);
-    } catch (err) {
-      await markFailure(job, err);
-    }
-  }, 200);
+    await handler(job.payload as any);
+
+    await markSuccess(job.id); // if task is done, update job status
+    console.log(`Job Id: ${job.id} is success`);
+  } catch (err) {
+    await markFailure(job, err);
+  }
 }

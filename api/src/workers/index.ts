@@ -1,3 +1,5 @@
+import { logger } from "../app";
+
 export async function startBackgroundWorkers() {
-    console.log("🚀 workers started");
+    logger.info("Workers started");
 }

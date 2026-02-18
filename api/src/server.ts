@@ -1,4 +1,4 @@
-import { createApp } from "./app";
+import { createApp, logger } from "./app";
 import { connectDB } from "./db";
 import { initModules, mountRoutes, startWorkers } from "./modules";
 import { startBackgroundWorkers } from "./workers";
@@ -12,7 +12,7 @@ async function bootstrap() {
     mountRoutes(app);
 
     app.listen(env.PORT, () =>
-        console.log(`🚀 API running on http://localhost:${env.PORT}`)
+        logger.info(`API running on http://localhost:${env.PORT}`)
     );
 
     await startWorkers();

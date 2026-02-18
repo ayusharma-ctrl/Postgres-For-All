@@ -1,3 +1,4 @@
+import { logger } from "../../app";
 import { sequelize } from "../../db";
 import { Job } from "./queue.model";
 import {
@@ -69,9 +70,9 @@ export async function markFailure(
   const retry = job.attempts < job.max_attempts;
 
   if (retry) {
-    console.log(`Job Id: ${job.id} is failed, will retry`);
+    logger.info(`Job Id: ${job.id} is failed, will retry`);
   } else {
-    console.log(`Job Id: ${job.id} is dead`);
+    logger.info(`Job Id: ${job.id} is dead`);
   }
 
   await Job.update(

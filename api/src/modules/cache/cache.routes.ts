@@ -4,23 +4,17 @@ import {
     setCache
 } from "./cache.service";
 import { getJobStats } from "./materialized-cache.service";
-
+import { logger } from "../../app";
 
 export const cacheRouter = Router();
 
-
 cacheRouter.get("/test", async (req, res) => {
-    const data = await getOrSetCache(
-        "test-key",
-        30,
-        async () => {
-            console.log("Fetching fresh data...");
-
-            return {
-                time: new Date()
-            };
-        }
-    );
+    const data = await getOrSetCache("test-key", 30, async () => {
+        logger.info("Fetching fresh data...");
+        return {
+            time: new Date(),
+        };
+    });
 
     res.json(data);
 });
@@ -39,7 +33,7 @@ cacheRouter.post("/test", async (req, res) => {
 });
 
 cacheRouter.get("/job-stats", async (req, res) => {
-        const stats = await getJobStats();
-        res.json(stats);
-    }
+    const stats = await getJobStats();
+    res.json(stats);
+}
 );

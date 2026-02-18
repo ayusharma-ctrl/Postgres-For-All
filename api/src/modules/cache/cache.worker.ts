@@ -1,5 +1,6 @@
 import { Op } from "sequelize";
 import { Cache } from "./cache.model";
+import { logger } from "../../app";
 
 const CLEANUP_INTERVAL_MS = 30_000; // 30 seconds
 
@@ -16,14 +17,14 @@ export async function cleanupExpiredCache(): Promise<number> {
 }
 
 export function startCacheCleanupWorker(): void {
-    console.log("Cache cleanup worker started");
+    logger.info("Cache cleanup worker started");
 
     setInterval(async () => {
         try {
             const deleted = await cleanupExpiredCache();
 
             if (deleted > 0) {
-                console.log(`Cache cleanup removed ${deleted} expired entries`);
+                logger.info(`Cache cleanup removed ${deleted} expired entries`);
             }
         } catch (error) {
             console.error("Cache cleanup failed:", error);

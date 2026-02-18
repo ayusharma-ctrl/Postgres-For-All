@@ -4,6 +4,7 @@ import {
     PubSubChannel
 } from "./pubsub.types";
 import { notifyQueueWorker } from "../queue/queue.worker";
+import { logger } from "../../app";
 
 
 const client = new pg.Client({
@@ -21,13 +22,13 @@ type EventHandler = (payload: unknown) => void;
 // for example, if notifaction received on channel X, call this function
 const handlers: Partial<Record<PubSubChannel, EventHandler>> = {
     job_created: (payload) => {
-        console.log("Received job_created event:", payload);
+        logger.info({ payload }, "Received job_created event");
         // here i notify queue worker to check and self-assign job
         notifyQueueWorker();
     },
 
     cache_invalidated: (payload) => {
-        console.log("Received cache_invalidated event:", payload);
+        logger.info({ payload }, "Received cache_invalidated event");
     }
 };
 
@@ -35,7 +36,7 @@ const handlers: Partial<Record<PubSubChannel, EventHandler>> = {
 export async function startPubSubListener(): Promise<void> {
     await client.connect();
 
-    console.log("PubSub listener connected");
+    logger.info("PubSub listener connected");
 
     const channels: PubSubChannel[] = ["job_created", "cache_invalidated"];
 

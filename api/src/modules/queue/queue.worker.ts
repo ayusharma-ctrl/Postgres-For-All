@@ -1,3 +1,4 @@
+import { logger } from "../../app";
 import {
   fetchNextJob,
   markFailure,
@@ -12,7 +13,7 @@ type HandlerMap = {
 // here we can define as many as handlers/jobs for which we craete queue
 const handlers: HandlerMap = {
   email: async (payload) => {
-    console.log("📧 sending email:", payload.to);
+    logger.info({ payload: payload.to }, "Sending email");
     // we can throw error here to simulate job failed, retry logic
     // throw new Error('Method to send mails is not complete');
   }
@@ -20,12 +21,12 @@ const handlers: HandlerMap = {
 
 // thi smethod will start the worker in background
 export async function startQueueWorker() {
-  console.log("🚀 queue worker started");
+  logger.info("Queue worker started");
 
   // replace 200 ms with 60000 (1-minute) as we added pub-sub to reduce db poll, still using interval as fallback
   setInterval(async () => {
     notifyQueueWorker();
-  }, 60 * 1000); 
+  }, 60 * 1000);
 }
 
 export async function notifyQueueWorker() {
@@ -40,7 +41,7 @@ export async function notifyQueueWorker() {
     await handler(job.payload as any);
 
     await markSuccess(job.id); // if task is done, update job status
-    console.log(`Job Id: ${job.id} is success`);
+    logger.info(`Job Id: ${job.id} is success`);
   } catch (err) {
     await markFailure(job, err);
   }

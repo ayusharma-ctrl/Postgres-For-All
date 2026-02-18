@@ -1,3 +1,4 @@
+import { logger } from "../../app";
 import { Cache } from "./cache.model";
 
 /* 
@@ -20,11 +21,11 @@ export async function getCache<T>(
 
     if (row.expires_at < new Date()) {
         await Cache.destroy({ where: { key } });
-        console.log("Cache Expired");
+        logger.warn("Cache Expired");
         return null;
     }
 
-    console.log("From cache...");
+    logger.info("From cache...");
     return row.value as T;
 }
 

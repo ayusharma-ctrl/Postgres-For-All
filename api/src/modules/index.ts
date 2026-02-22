@@ -3,12 +3,14 @@ import { queueModule } from "./queue/queue.module";
 import { cacheModule } from "./cache/cache.module";
 import { pubsubModule } from "./pubsub/pubsub.module";
 import { rateLimitModule } from "./rate-limit/rate-limit.module";
+import { searchModule } from "./search/search.module";
 
 const modules: Module[] = [
     queueModule,
     cacheModule,
     pubsubModule,
     rateLimitModule,
+    searchModule,
 ];
 
 export async function initModules() {
